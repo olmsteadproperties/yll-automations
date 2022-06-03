@@ -1,0 +1,41 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "command": "npm run cypress:open",
+            "name": "Start Cypress",
+            "request": "launch",
+            "type": "node-terminal"
+        },
+        {
+            "command": "npm install",
+            "name": "Install",
+            "request": "launch",
+            "type": "node-terminal"
+        },
+        {
+            "command": "npm run cypress:debug",
+            "name": "Debug Cypress",
+            "request": "launch",
+            "type": "node-terminal"
+        },
+        {
+            "type": "chrome",
+            "request": "attach",
+            "name": "Attach to Chrome",
+            "port": 9222,
+            "urlFilter": "http://localhost:59697/__/#/tests/integration/*",
+            "webRoot": "${workspaceFolder}",
+            "sourceMaps": true,
+            "skipFiles": [
+                "cypress_runner.js",
+            ],
+        },
+        {// TODO: Add reporting output. Currently does nothing. 
+            "command": "npx cypress run --spec **/path/to/some/test.js --reporter cypress-multi-reporters --reporter-options configFile=reporter-config.json",
+            "name": "Run Report",
+            "request": "launch",
+            "type": "node-terminal"
+        }
+    ]
+}
