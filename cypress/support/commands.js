@@ -8,7 +8,6 @@
 // https://on.cypress.io/custom-commands
 // ***********************************************
 //
-//
 // -- This is a parent command --
 // Cypress.Commands.add('login', (email, password) => { ... })
 //
@@ -23,3 +22,23 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+import 'cypress-iframe';
+
+//https://www.cypress.io/blog/2020/02/12/working-with-iframes-in-cypress/
+Cypress.Commands.add('embeded', (isIframe, method, params) => {
+    if (isIframe)
+    {
+        if (method === "get")
+        {
+            method = "find";
+        }
+        return cy.iframe()[method](...params);
+    }
+    else
+    {
+        params.push({ includeShadowDom: true });
+        return cy[method](...params);
+    }
+
+});
