@@ -5,6 +5,14 @@
 - Recommended `node js 14+` and `npm 6+`
 - Install dependencies: `npm install` or `yarn install`
 - Start the server: `npm run cypress:open`
+- Add the .env file manually. This file contains sentive credentials and needs to be obtained securly. It should contain the following values:
+
+```
+GOOGLE_EMAIL = 'yourlandloans@gmail.com'
+GOOGLE_CLIENTID = '14691163212-smr7kauj98312rhq1i3h5v3n6dthcg3t.apps.googleusercontent.com'
+GOOGLE_CLIENT_SECRET = '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'
+GOOGLE_REFRESH_TOKEN = '1//04vIJ...YJs0fN0' // this is private and nees to be optianed from a team member or lastpass.
+```
 
 ### Windows
 
