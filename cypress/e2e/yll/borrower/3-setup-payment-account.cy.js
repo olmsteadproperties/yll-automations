@@ -1,9 +1,7 @@
 /// <reference types="cypress" />
 
-import accounts from "../../../support/yll/accounts";
-import selectors from "../../../support/yll/selectors";
 import paths from "../../../support/yll/paths";
-import {login, logout, navigate, exists, contains, randomString, increaseTimout, copyObject} from "../../../support/yll/util";
+import {login, navigate, contains, randomString, increaseTimout, copyObject} from "../../../support/yll/util";
 import {generatedAccounts} from '../../../support/output/generatedAccounts.json';
 import 'cypress-iframe';
 
@@ -33,10 +31,6 @@ describe('Set Up Borrower Payment Method', () => {
         login({account: lastAccountAdded})
     })
 
-    after(() => {
-        // logout()
-    })
-
     it('Creats Dwalla and Adds Bank Info', () => {
 
         cy.wait(4000);
@@ -61,7 +55,6 @@ describe('Set Up Borrower Payment Method', () => {
         contains('h4', 'Add Payment Account').then((addPaymentAccount) => { 
             if (addPaymentAccount)
             {
-                // iframe = false;
                 //Create Dwalla Account
                 cy.embeded(false, 'get', ['input#emailInput']).type(lastAccountAdded.email);
                 cy.embeded(false, 'get', ['input#firstNameInput']).type(lastAccountAdded.firstName);

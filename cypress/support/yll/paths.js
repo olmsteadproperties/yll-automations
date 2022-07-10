@@ -17,7 +17,6 @@ const GetPaths = (base) => {
     const fullPaths = {};
 
     for (const [key, value] of Object.entries(paths)) {
-        // console.log(`${key}: ${value}`);
         fullPaths[key] = base + value;
     }
 

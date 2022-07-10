@@ -1,7 +1,6 @@
 /// <reference types="cypress" />
 
 import accounts from "../../../support/yll/accounts";
-import selectors from "../../../support/yll/selectors";
 import paths from "../../../support/yll/paths";
 import {login, navigate, randomString} from "../../../support/yll/util";
 import {generatedAccounts} from '../../../support/output/generatedAccounts.json';

@@ -1,7 +1,5 @@
 /// <reference types="cypress" />
 
-import accounts from "../../../support/yll/accounts";
-import selectors from "../../../support/yll/selectors";
 import paths from "../../../support/yll/paths";
 import {login, navigate, copyObject} from "../../../support/yll/util";
 import {generatedAccounts} from '../../../support/output/generatedAccounts.json';
@@ -25,13 +23,6 @@ describe('Add Borrower to Loan', () => {
         accountRow.contains('button', 'Verify').click();
         cy.get('input#amt1').type(".01");
         cy.get('input#amt2').type(".01");
-
-        // cy.get('div.MuiBackdrop-root').remove()
-        // cy.window().then((win) => {
-        //     // win.document.getElementsByClassName("MuiModal-root")[0].style.zIndex = "-1";
-        //     win.document.getElementsByClassName("MuiBackdrop-root")[0].style.display = "none";
-        //     win.document.getElementsByClassName("MuiLoadingButton-root")[0].style.zIndex = "2000";
-        // })
 
         // cy.get('div.MuiBox-root').contains('button', 'Verify').click(); //Cannot click thie button? "Element is being covered by another element"
         cy.get('form').submit() // Have to use direct form submit instead. 

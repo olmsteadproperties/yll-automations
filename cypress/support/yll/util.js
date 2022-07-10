@@ -30,16 +30,6 @@ const logout = () => {
             cy.contains('button', 'Logout').click()
         }
     })
-
-    // cy.get(selectors.pageHeadder.appBar)
-    //     .then(() => {
-    //         return '';
-    //         cy.get(selectors.pageHeadder.appBar).get(selectors.pageHeadder.userIcon).click();
-    //         cy.contains('button', 'Logout').click()
-    //         return '';
-    //     }).then(() => {
-    //         return '';
-    //     });
 }
 
 const increaseTimout = (time, temporary=true) => {
@@ -84,11 +74,7 @@ const navigate = (path) => {
     }
 }
 
-const exists = (selector) => {
-    // return cy.get('body').then($body => {
-    //     return $body.find(selector).length > 0
-    // });
-    
+const exists = (selector) => {    
     return cy.get('body').then($body => {
         const matches = [];
         for (const element of $body.find(selector)) {

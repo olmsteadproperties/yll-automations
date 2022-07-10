@@ -1,11 +1,8 @@
 /// <reference types="cypress" />
 
-import accounts from "../../../support/yll/accounts";
-import selectors from "../../../support/yll/selectors";
 import paths from "../../../support/yll/paths";
 import {login, navigate, randomString} from "../../../support/yll/util";
 import {generatedAccounts} from '../../../support/output/generatedAccounts.json';
-import 'cypress-wait-until';
 
 const lastAccountAddedKey = Object.keys(generatedAccounts).slice(-1);
 const lastAccountAdded = generatedAccounts[lastAccountAddedKey];
@@ -37,8 +34,7 @@ describe('Add Borrower to Loan', () => {
 
         cy.contains('button', 'Confirm Payment').click();
 
-        // cy.contains('button', 'Confirm Payment of $1,234.56').click()
-
+        // cy.contains('button', 'Confirm Payment of $1,234.56').click() //Cannot click thie button? "Element is being covered by another element"
         cy.get('form').submit() // Have to use direct form submit instead. 
     })
 })

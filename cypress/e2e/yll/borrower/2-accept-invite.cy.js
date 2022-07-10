@@ -1,11 +1,8 @@
 /// <reference types="cypress" />
 
-import accounts from "../../../support/yll/accounts";
 import selectors from "../../../support/yll/selectors";
-import paths from "../../../support/yll/paths";
 import {login, generatePassword, copyObject} from "../../../support/yll/util";
 import {generatedAccounts} from '../../../support/output/generatedAccounts.json';
-
 import 'cypress-wait-until';
 
 describe('Borrower Accept Invite from Lender', () => {
