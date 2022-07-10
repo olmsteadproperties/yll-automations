@@ -3,7 +3,6 @@
 import paths from "../../../support/yll/paths";
 import {login, navigate, copyObject} from "../../../support/yll/util";
 import {generatedAccounts} from '../../../support/output/generatedAccounts.json';
-import 'cypress-wait-until';
 
 const lastAccountAddedKey = Object.keys(generatedAccounts).slice(-1);
 const lastAccountAdded = generatedAccounts[lastAccountAddedKey];

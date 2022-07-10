@@ -5,8 +5,6 @@ import {login, navigate, contains, randomString, increaseTimout, copyObject} fro
 import {generatedAccounts} from '../../../support/output/generatedAccounts.json';
 import 'cypress-iframe';
 
-import 'cypress-wait-until';
-
 const lastAccountAddedEmail = Object.keys(generatedAccounts).slice(-1);
 const lastAccountAdded = generatedAccounts[lastAccountAddedEmail];
 

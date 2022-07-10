@@ -29,13 +29,3 @@ module.exports = defineConfig({
     },
   },
 });
-
-
-// async function getEmail(){
-//     let inbox = new Inbox('credentials_gmail.json');
-//     await inbox.authenticateAccount(); // logs user in
-    
-//     let messages = await inbox.getLatestMessages();
-
-//     console.log("my inbox messages", JSON.stringify(messages,null,4));
-// }
