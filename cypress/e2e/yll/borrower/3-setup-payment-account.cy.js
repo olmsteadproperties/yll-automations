@@ -62,41 +62,70 @@ describe('Set Up Borrower Payment Method', () => {
             }
 
             //https://www.cypress.io/blog/2020/02/12/working-with-iframes-in-cypress/
-            const iframeRefresh = () => {
-                cy.wait(3000);
-                cy.frameLoaded('iframe');
-            }
+            // const iframeRefresh = () => {
+            //     cy.wait(3000);
+            //     cy.frameLoaded('iframe');
+            // }
 
-            //Add Payment Method
-            cy.contains('span', 'Add Payment Method'); //Can take a second to load this page so wait to see the header.
+            // //Add Payment Method
+            // cy.contains('span', 'Add Payment Method'); //Can take a second to load this page so wait to see the header.
 
-            iframeRefresh();
-            cy.embeded(true, 'contains', ['h4', 'Search for your bank or credit union.']);  //Also takes a second for Dwalla to load so wait until you can see this header too. 
-            cy.embeded(true, 'contains', ['a', 'Bank of America']).click({force: true});
+            // iframeRefresh();
+            // cy.embeded(true, 'contains', ['h4', 'Search for your bank or credit union.']);  //Also takes a second for Dwalla to load so wait until you can see this header too. 
+            // cy.embeded(true, 'contains', ['a', 'Bank of America']).click({force: true});
 
-            iframeRefresh();
+            // iframeRefresh();
 
-            //Select verification type
-            cy.embeded(true, 'contains', ['a', 'Use deposit verification']).click();
+            // //Select verification type
+            // cy.embeded(true, 'contains', ['a', 'Use deposit verification']).click();
 
-            iframeRefresh();
+            // iframeRefresh();
+
+            //Microdeposit validation //TODO: test Instant Account Verification (IAV)
+            const microDepositForm = cy.contains('Using Micro Deposit').parent(); 
             
-            //Add bank account information
-            const newBankAccount = copyObject(bankAccounts.success)
-            newBankAccount.bankName = randomString();
-            newBankAccount.verified = false;
-            cy.embeded(true, 'get', ['input#RoutingNumber']).type(newBankAccount.routingNumber);
-            cy.embeded(true, 'get', ['input#AccountNumber']).type(newBankAccount.accountNumber);
-            cy.embeded(true, 'get', ['input#BankAccountName']).type(newBankAccount.bankName);
-            cy.embeded(true, 'contains', ['button', 'Agree & Continue']).click();
+            microDepositForm.within(() => {
+                //Add bank account information
+                const newBankAccount = copyObject(bankAccounts.success)
+                newBankAccount.bankName = randomString();
+                newBankAccount.verified = false;    
+                cy.get('input[name="routingNumber"]').type(newBankAccount.routingNumber);
+                cy.get('input[name="accountNumber"]').type(newBankAccount.accountNumber);
+                cy.get('input[name="bankName"]').type(newBankAccount.bankName);
+                cy.contains('Account Type').parent().click();
+            })
 
-            const updatedAccount = copyObject(lastAccountAdded);
-            let updateBankAccounts = typeof(updatedAccount.bankAccounts) == "undefined" ? {} : updatedAccount.bankAccounts;
-            updateBankAccounts[newBankAccount.bankName] = newBankAccount;
-            updatedAccount.bankAccounts = updateBankAccounts;
-            updatedAccount.dateUpdated = new Date().toString();
-            generatedAccounts[lastAccountAdded.email] = updatedAccount;
-            cy.writeFile('cypress/support/output/generatedAccounts.json', {generatedAccounts});
+            cy.contains('.MuiButtonBase-root', 'Savings').click()
+
+            //Cannot click thie button? "Element is being covered by another element"
+            // microDepositForm.within(() => { 
+            //     cy.get('button[type="submit"]').click();
+            //     cy.contains('button', 'Add Bank').click();
+            // })
+
+            const microDepositFormSubmit = cy.contains('Using Micro Deposit').parent(); //Somehow the value of microDepositForm is changing so we have to get it again.
+            microDepositFormSubmit.submit(); // Have to use direct form submit instead. 
+
+
+
+            //TODO: fix new UI stuff
+            
+            // //Add bank account information
+            // const newBankAccount = copyObject(bankAccounts.success)
+            // newBankAccount.bankName = randomString();
+            // newBankAccount.verified = false;
+            // cy.embeded(true, 'get', ['input#RoutingNumber']).type(newBankAccount.routingNumber);
+            // cy.embeded(true, 'get', ['input#AccountNumber']).type(newBankAccount.accountNumber);
+            // cy.embeded(true, 'get', ['input#BankAccountName']).type(newBankAccount.bankName);
+            // cy.embeded(true, 'contains', ['button', 'Agree & Continue']).click();
+
+            // const updatedAccount = copyObject(lastAccountAdded);
+            // let updateBankAccounts = typeof(updatedAccount.bankAccounts) == "undefined" ? {} : updatedAccount.bankAccounts;
+            // updateBankAccounts[newBankAccount.bankName] = newBankAccount;
+            // updatedAccount.bankAccounts = updateBankAccounts;
+            // updatedAccount.dateUpdated = new Date().toString();
+            // generatedAccounts[lastAccountAdded.email] = updatedAccount;
+            // cy.writeFile('cypress/support/output/generatedAccounts.json', {generatedAccounts});
         });
     });
 });

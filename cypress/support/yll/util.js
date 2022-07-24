@@ -16,7 +16,6 @@ const login = ({account, forwardUrl = "", navigate = true}) => {
 
     // login can take a bit so we need to set the timout to a larger number.
     increaseTimout(10000);
-
 }
 
 const logout = () => {
