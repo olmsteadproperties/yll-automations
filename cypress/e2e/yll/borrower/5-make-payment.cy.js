@@ -24,8 +24,8 @@ describe('Add Borrower to Loan', () => {
 
         cy.get('input#paymentAmount').type("1234.56");
 
-        var regex1 = /[^0-9](?=[0-9])/g; 
-        var regex2 = /[^a-zA-Z](?=[a-zA-Z])/g;  
+        var regex1 = /[^0-9](?=[0-9])/g;
+        var regex2 = /[^a-zA-Z](?=[a-zA-Z])/g;
         var nameWithSpaces = lastBankAccountAdded.bankName.replace(regex1, '$& ').replace(regex2, '$& ');
         cy.log('name with spaced ' + nameWithSpaces);
         cy.contains('Select Bank Account').parent().contains(nameWithSpaces, {matchCase: false}).click();

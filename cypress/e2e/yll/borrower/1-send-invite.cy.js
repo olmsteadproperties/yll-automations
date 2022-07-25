@@ -5,8 +5,6 @@ import paths from "../../../support/yll/paths";
 import {login, navigate, randomString} from "../../../support/yll/util";
 import {generatedAccounts} from '../../../support/output/generatedAccounts.json';
 
-import 'cypress-wait-until';
-
 const loanName = "Cypress Test Loan"
 
 const lastName = randomString();

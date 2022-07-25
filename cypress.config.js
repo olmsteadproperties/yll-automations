@@ -5,11 +5,10 @@ require('dotenv').config()
 
 module.exports = defineConfig({
   projectId: 'ggicp7',
+
   viewportWidth: 2048,
   viewportHeight: 1024,
-
   watchForFileChanges: false,
-
   chromeWebSecurity: false,
 
   e2e: {
@@ -29,13 +28,3 @@ module.exports = defineConfig({
     },
   },
 });
-
-
-// async function getEmail(){
-//     let inbox = new Inbox('credentials_gmail.json');
-//     await inbox.authenticateAccount(); // logs user in
-    
-//     let messages = await inbox.getLatestMessages();
-
-//     console.log("my inbox messages", JSON.stringify(messages,null,4));
-// }
