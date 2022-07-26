@@ -13,5 +13,5 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v4
         with:
-          build: npm run build
-          start: npm start
+          build: npm install
+          start: npm run cypress:run --record --key b2d95fbf-4fe7-42cc-8a13-f6828ab975f1
