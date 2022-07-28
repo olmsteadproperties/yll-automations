@@ -30,7 +30,7 @@ jobs:
         with:
           # browser: firefox
           build: npm install
-          start: npm run cypress:run --headed --browser firefox --spec 'cypress/e2e/yll/**' --record --key b2d95fbf-4fe7-42cc-8a13-f6828ab975f1
+          start: npm run cypress:run --headed --browser firefox --spec 'cypress/e2e/yll/**'
 
   edge:
     runs-on: windows-latest
@@ -40,7 +40,7 @@ jobs:
         with:
           # browser: edge
           build: npm install
-          start: npm run cypress:run --headed --browser edge --spec 'cypress/e2e/yll/**' --record --key b2d95fbf-4fe7-42cc-8a13-f6828ab975f1
+          start: npm run cypress:run --headed --browser edge --spec 'cypress/e2e/yll/**'
 
   chrome:
     runs-on: ubuntu-latest
@@ -51,7 +51,7 @@ jobs:
           # browser: chrome
           # headed: true
           build: npm install
-          start: npm run cypress:run --headed --browser chrome --spec 'cypress/e2e/yll/**' --record --key b2d95fbf-4fe7-42cc-8a13-f6828ab975f1
+          start: npm run cypress:run --headed --browser chrome --spec 'cypress/e2e/yll/**'
 
   electron:
     runs-on: ubuntu-latest
@@ -62,4 +62,4 @@ jobs:
           # browser: electron
           # headed: true
           build: npm install
-          start: npm run cypress:run --headed --browser electron --spec 'cypress/e2e/yll/**' --record --key b2d95fbf-4fe7-42cc-8a13-f6828ab975f1
+          start: npm run cypress:run --headed --browser electron --spec 'cypress/e2e/yll/**'
