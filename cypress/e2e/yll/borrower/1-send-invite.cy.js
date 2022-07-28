@@ -47,7 +47,9 @@ describe('Add Borrower to Loan', () => {
             cy.wait(3000); //wait for alert to trigger
         }
         
-        cy.writeFile('cypress/support/output/generatedAccounts.json', {generatedAccounts});        
+        cy.writeFile('cypress/support/output/generatedAccounts.json', {generatedAccounts});
+        
+        cy.wait(5000);
     })
 })
 

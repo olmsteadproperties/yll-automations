@@ -121,6 +121,8 @@ describe('Set Up Borrower Payment Method', () => {
             updatedAccount.dateUpdated = new Date().toString();
             generatedAccounts[lastAccountAdded.email] = updatedAccount;
             cy.writeFile('cypress/support/output/generatedAccounts.json', {generatedAccounts});
+        
+            cy.wait(5000);
         });
     });
 });

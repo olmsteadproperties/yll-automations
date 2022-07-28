@@ -121,6 +121,8 @@ describe('Borrower Accept Invite from Lender', () => {
                 cy.log(`New borrower created:`)
                 cy.log(`\temail: ${updatedAccount.email}`)
                 cy.log(`\tpassword: ${updatedAccount.password}`)
+        
+                cy.wait(5000);
             })
         })
     });

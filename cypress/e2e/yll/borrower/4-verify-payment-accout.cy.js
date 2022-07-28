@@ -43,6 +43,8 @@ describe('Add Borrower to Loan', () => {
         updatedAccount.dateUpdated = new Date().toString();
         generatedAccounts[lastAccountAdded.email] = updatedAccount;
         cy.writeFile('cypress/support/output/generatedAccounts.json', {generatedAccounts});
+        
+        cy.wait(5000);
     })
 })
 
