@@ -10,6 +10,7 @@ module.exports = defineConfig({
   viewportHeight: 1024,
   watchForFileChanges: false,
   chromeWebSecurity: false,
+  video: false,
 
   e2e: {
     env: {
