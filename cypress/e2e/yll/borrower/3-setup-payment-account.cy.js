@@ -34,9 +34,9 @@ describe('Set Up Borrower Payment Method', () => {
         login({account: lastAccountAdded})
     })
 
-    after(() => {
-        logout();
-    })
+    // after(() => {
+    //     logout();
+    // })
 
     it('Creates Dwalla and Adds Bank Info', () => {
 

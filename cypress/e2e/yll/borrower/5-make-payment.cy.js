@@ -16,9 +16,9 @@ describe('Add Borrower to Loan', () => {
         login({account: lastAccountAdded});
     })
 
-    after(() => {
-        logout();
-    })
+    // after(() => {
+    //     logout();
+    // })
 
     it('Make Payment on Loan', () => {
         navigate(paths.loansMakePayment);

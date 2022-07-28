@@ -14,9 +14,9 @@ describe('Add Borrower to Loan', () => {
         login({account: lastAccountAdded});
     })
 
-    after(() => {
-        logout();
-    })
+    // after(() => {
+    //     logout();
+    // })
 
     it('Verify Latest Bank Account', () => {
         navigate(paths.paymentMethods);

@@ -26,9 +26,9 @@ describe('Add Borrower to Loan', () => {
         navigate(paths.loansAddUser);
     })
 
-    after(() => {
-        logout();
-    })
+    // after(() => {
+    //     logout();
+    // })
 
     it('Should fill out fields with borrow information ', () => {
         cy.get('#loanId').click();
