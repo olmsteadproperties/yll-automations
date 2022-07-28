@@ -11,6 +11,7 @@ module.exports = defineConfig({
   watchForFileChanges: false,
   chromeWebSecurity: false,
   processVideoOnPassingTest: false,
+  videoCompression: false,
 
   e2e: {
     env: {
