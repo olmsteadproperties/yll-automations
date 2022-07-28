@@ -107,7 +107,6 @@ describe('Borrower Accept Invite from Lender', () => {
                 
                 cy.on('window:alert', (text) => {
                     expect(text).to.contains('Reset Password Successful');
-                    logout();
                 });
                 cy.contains('button', 'Reset Password').click();
                 cy.wait(3000); //Wait for alert to trigger
