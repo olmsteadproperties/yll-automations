@@ -1,12 +1,14 @@
 import paths from "./paths";
 import selectors from "./selectors";
 
-const login = ({account, forwardUrl = "", navigate = true}) => {
-    if (navigate)
-    {
-        logout();
-        cy.visit(paths.login);
-    }
+const login = ({account, forwardUrl = "", loginUrl = ""}) => {
+    Cypress.on('uncaught:exception', (err, runnable) => {
+        return false; //Dangeriously ignoring all uncaught exceptions
+    })
+
+    loginUrl = loginUrl !== "" ? loginUrl : paths.login
+    logout();
+    cy.visit(loginUrl);
     cy.get(selectors.pageSignIn.emailInput).clear().type(account.email);
     cy.get(selectors.pageSignIn.passwordInput).clear().type(account.password);
     cy.get(selectors.pageSignIn.loginButton).click();
@@ -53,7 +55,7 @@ const navigate = (path) => {
         cy.url().should('include', path);
     }
     else if (path === paths.loansMakePayment)
-    {        
+    {
         cy.get('.simplebar-wrapper').contains('Loans').click();
         cy.get('.simplebar-wrapper').contains('Make Payment').click();
         cy.url().should('include', path);

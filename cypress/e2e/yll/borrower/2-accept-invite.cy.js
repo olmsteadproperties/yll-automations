@@ -87,13 +87,14 @@ describe('Borrower Accept Invite from Lender', () => {
         cy.visit(passwordResetLink).then(() => {
             cy.url().then(url => {
 
+                let devUrl = "";
                 if (!url.includes('dev.'))
                 {
                     let devUrl = url.replace('https://app.yourlandloans', 'https://dev.app.yourlandloans');
                     cy.visit(devUrl)
                 }
                 
-                login({account: newAccount, navigate:false});
+                login({account: newAccount, loginUrl: devUrl});
 
                 cy.get(selectors.pageSignIn.passwordInput).should('have.length', 1)
                 
