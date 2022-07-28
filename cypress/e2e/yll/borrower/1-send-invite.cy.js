@@ -2,7 +2,7 @@
 
 import accounts from "../../../support/yll/accounts";
 import paths from "../../../support/yll/paths";
-import {login, navigate, randomString} from "../../../support/yll/util";
+import {login, logout, navigate, randomString} from "../../../support/yll/util";
 import {generatedAccounts} from '../../../support/output/generatedAccounts.json';
 
 const loanName = "Cypress Test Loan"
@@ -26,6 +26,10 @@ describe('Add Borrower to Loan', () => {
         navigate(paths.loansAddUser);
     })
 
+    after(() => {
+        logout();
+    })
+
     it('Should fill out fields with borrow information ', () => {
         cy.get('#loanId').click();
         cy.contains(loanName).should('have.length', 1);
@@ -36,7 +40,11 @@ describe('Add Borrower to Loan', () => {
         cy.get('input#userEmail').type(newAccount.email);
         if (inviteAccount) 
         {
+            cy.on('window:alert', (text) => {
+                expect(text).to.contains('User created successfully');
+            });
             cy.contains('button', 'Submit').click();
+            cy.wait(3000); //wait for alert to trigger
         }
         
         cy.writeFile('cypress/support/output/generatedAccounts.json', {generatedAccounts});        

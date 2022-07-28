@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 import paths from "../../../support/yll/paths";
-import {login, navigate, randomString} from "../../../support/yll/util";
+import {login, logout, navigate, randomString} from "../../../support/yll/util";
 import {generatedAccounts} from '../../../support/output/generatedAccounts.json';
 
 const lastAccountAddedKey = Object.keys(generatedAccounts).slice(-1);
@@ -14,6 +14,10 @@ const loanName = "Cypress Test Loan"
 describe('Add Borrower to Loan', () => {
     before(() => {
         login({account: lastAccountAdded});
+    })
+
+    after(() => {
+        logout();
     })
 
     it('Make Payment on Loan', () => {

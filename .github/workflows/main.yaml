@@ -5,6 +5,7 @@ env:
       GOOGLE_CLIENTID: ${{ secrets.GOOGLE_CLIENTID }}
       GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
       GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 on: [push]
 

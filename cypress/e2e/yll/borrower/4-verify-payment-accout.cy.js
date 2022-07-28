@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 import paths from "../../../support/yll/paths";
-import {login, navigate, copyObject} from "../../../support/yll/util";
+import {login, logout, navigate, copyObject} from "../../../support/yll/util";
 import {generatedAccounts} from '../../../support/output/generatedAccounts.json';
 
 const lastAccountAddedKey = Object.keys(generatedAccounts).slice(-1);
@@ -14,6 +14,10 @@ describe('Add Borrower to Loan', () => {
         login({account: lastAccountAdded});
     })
 
+    after(() => {
+        logout();
+    })
+
     it('Verify Latest Bank Account', () => {
         navigate(paths.paymentMethods);
 
@@ -23,8 +27,13 @@ describe('Add Borrower to Loan', () => {
         cy.get('input#amt1').type(".01");
         cy.get('input#amt2').type(".01");
 
+        cy.on('window:alert', (text) => {
+            expect(text).to.contains('Funding source verified successfully.');
+        });
         // cy.get('div.MuiBox-root').contains('button', 'Verify').click(); //Cannot click thie button? "Element is being covered by another element"
         cy.get('form').submit() // Have to use direct form submit instead. 
+
+        cy.wait(3000); //Wait for alert to trigger
         
         const updatedAccountRow = cy.contains(lastBankAccountAdded.bankName).parentsUntil('tr').parent(); 
         updatedAccountRow.contains('span', 'Verified');

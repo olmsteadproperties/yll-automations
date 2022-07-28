@@ -4,6 +4,7 @@ import selectors from "./selectors";
 const login = ({account, forwardUrl = "", navigate = true}) => {
     if (navigate)
     {
+        logout();
         cy.visit(paths.login);
     }
     cy.get(selectors.pageSignIn.emailInput).clear().type(account.email);
@@ -20,6 +21,8 @@ const login = ({account, forwardUrl = "", navigate = true}) => {
 
 const logout = () => {
     cy.visit(paths.base);
+
+    cy.wait(2000);
 
     exists(selectors.pageHeadder.appBar).then(result => {
         if (result)

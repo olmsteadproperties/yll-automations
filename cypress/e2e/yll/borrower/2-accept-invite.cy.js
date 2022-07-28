@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 import selectors from "../../../support/yll/selectors";
-import {login, generatePassword, copyObject} from "../../../support/yll/util";
+import {login, logout, generatePassword, copyObject} from "../../../support/yll/util";
 import {generatedAccounts} from '../../../support/output/generatedAccounts.json';
 import 'cypress-wait-until';
 
@@ -79,6 +79,10 @@ describe('Borrower Accept Invite from Lender', () => {
         cy.waitUntil(() => accountUpdateComplete);
     });
 
+    // after(() => {
+    //     logout();
+    // })
+
     it('Should reset password using email reset link', () => {
         cy.visit(passwordResetLink).then(() => {
             cy.url().then(url => {
@@ -103,9 +107,10 @@ describe('Borrower Accept Invite from Lender', () => {
                 
                 cy.on('window:alert', (text) => {
                     expect(text).to.contains('Reset Password Successful');
+                    logout();
                 });
-
                 cy.contains('button', 'Reset Password').click();
+                cy.wait(3000); //Wait for alert to trigger
 
                 const updatedAccount = copyObject(newAccount)
                 updatedAccount.password = passwordReset;
