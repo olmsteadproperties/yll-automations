@@ -9,15 +9,49 @@ env:
 on: [push]
 
 jobs:
-  cypress-run:
+  # cypress-run:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #     # Install NPM dependencies, cache them correctly
+  #     # and run all Cypress tests
+  #     - name: Cypress run
+  #       uses: cypress-io/github-action@v4
+  #       with:
+  #         build: npm install
+  #         start: npm run cypress:run --headed --browser chrome --spec 'cypress/e2e/yll/**' --record --key b2d95fbf-4fe7-42cc-8a13-f6828ab975f1
+
+  firefox:
     runs-on: ubuntu-latest
+    container:
+      image: cypress/browsers:node12.16.1-chrome80-ff73
+      options: --user 1001
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      # Install NPM dependencies, cache them correctly
-      # and run all Cypress tests
-      - name: Cypress run
-        uses: cypress-io/github-action@v4
+      - uses: actions/checkout@v2
+      - uses: cypress-io/github-action@v4
         with:
+          # browser: firefox
+          build: npm install
+          start: npm run cypress:run --browser firefox --spec 'cypress/e2e/yll/**' --record --key b2d95fbf-4fe7-42cc-8a13-f6828ab975f1
+
+  edge:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: cypress-io/github-action@v4
+        with:
+          # browser: edge
+          build: npm install
+          start: npm run cypress:run --browser edge --spec 'cypress/e2e/yll/**' --record --key b2d95fbf-4fe7-42cc-8a13-f6828ab975f1
+
+  chrome:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: cypress-io/github-action@v4
+        with:
+          # browser: chrome
+          # headed: true
           build: npm install
           start: npm run cypress:run --headed --browser chrome --spec 'cypress/e2e/yll/**' --record --key b2d95fbf-4fe7-42cc-8a13-f6828ab975f1
