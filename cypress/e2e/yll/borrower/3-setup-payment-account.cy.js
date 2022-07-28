@@ -34,7 +34,7 @@ describe('Set Up Borrower Payment Method', () => {
         login({account: lastAccountAdded})
     })
 
-    it('Creats Dwalla and Adds Bank Info', () => {
+    it('Creates Dwalla and Adds Bank Info', () => {
 
         cy.wait(4000);
 
@@ -65,27 +65,42 @@ describe('Set Up Borrower Payment Method', () => {
                 cy.embeded(false, 'get', ['input#checkbox[name="agreed"]']).click();
                 cy.embeded(false, 'get', ['input#dwolla-customer-create-submit[value="Agree and Continue"]']).click();
             }
+            
+            cy.wait(4000);
 
-            cy.contains('Micro Deposit Verification').parent().click()
+            cy.reload()
+
+            cy.contains('h5', 'Micro Deposit Verification').parent('button').click();
 
             //Microdeposit validation //TODO: test Instant Account Verification (IAV)
-            const microDepositForm = () => cy.contains('Please fill bank details below').parent(); 
+            const microDepositForm = () => cy.contains('Please enter bank details below').parent(); 
 
             //Add bank account information
-            const newBankAccount = copyObject(bankAccounts.dwalla)
+            const newBankAccount = copyObject(bankAccounts.dwalla);
             newBankAccount.bankName = randomString();
             newBankAccount.verified = false;    
             
             microDepositForm().within(() => {
                 cy.get('input[name="routingNumber"]').type(newBankAccount.routingNumber);
                 cy.get('input[name="accountNumber"]').type(newBankAccount.accountNumber);
+                cy.get('input[name="accountNumber2"]').type(newBankAccount.accountNumber);
                 cy.get('input[name="bankName"]').type(newBankAccount.bankName);
                 cy.contains('Account Type').parent().click();
             })
 
             cy.contains('.MuiButtonBase-root', 'Savings').click();
 
-            cy.contains('Add Bank').click();
+            cy.contains('Confirm Details').click();
+
+            //CONFIRM BANK DETAILS model
+            const confirmDetailsModel = cy.contains('CONFIRM BANK DETAILS').parent(); 
+            confirmDetailsModel.within(() => {
+                cy.contains(newBankAccount.routingNumber);
+                cy.contains(newBankAccount.accountNumber);
+                cy.contains(newBankAccount.bankName);
+            })
+
+            cy.contains('button', 'Add Bank').click();
 
             //Update generatedAccounts.json
             const updatedAccount = copyObject(lastAccountAdded);
