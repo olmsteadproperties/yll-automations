@@ -57,7 +57,7 @@ describe('Set Up Borrower Payment Method', () => {
         navigate(paths.paymentAdd);
 
         cy.wait(4000);
-        increaseTimout(10000, false);
+        increaseTimout(20000, false);
 
         contains('h4', 'Add Payment Account').then((addPaymentAccount) => { 
             if (addPaymentAccount)
