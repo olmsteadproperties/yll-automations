@@ -64,11 +64,12 @@ describe('Set Up Borrower Payment Method', () => {
                 cy.embeded(false, 'get', ['input#lastNameInput']).type(lastAccountAdded.lastName);
                 cy.embeded(false, 'get', ['input#checkbox[name="agreed"]']).click();
                 cy.embeded(false, 'get', ['input#dwolla-customer-create-submit[value="Agree and Continue"]']).click();
+                cy.wait(10000);
             }
+
+            cy.reload(); // This is to fix a bug where buttons never enable on first borrower load.
             
             cy.wait(4000);
-
-            cy.reload()
 
             cy.contains('h5', 'Micro Deposit Verification').parent('button').click();
 

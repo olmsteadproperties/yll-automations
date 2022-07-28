@@ -20,4 +20,4 @@ jobs:
         uses: cypress-io/github-action@v4
         with:
           build: npm install
-          start: npm run cypress:run --record --key b2d95fbf-4fe7-42cc-8a13-f6828ab975f1
+          start: npm run cypress:run --headed --browser chrome --spec 'cypress/e2e/yll/**' --record --key b2d95fbf-4fe7-42cc-8a13-f6828ab975f1

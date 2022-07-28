@@ -25,7 +25,6 @@ describe('Add Borrower to Loan', () => {
 
         // cy.get('div.MuiBox-root').contains('button', 'Verify').click(); //Cannot click thie button? "Element is being covered by another element"
         cy.get('form').submit() // Have to use direct form submit instead. 
-
         
         const updatedAccountRow = cy.contains(lastBankAccountAdded.bankName).parentsUntil('tr').parent(); 
         updatedAccountRow.contains('span', 'Verified');
