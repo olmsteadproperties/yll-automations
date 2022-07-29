@@ -74,6 +74,7 @@ describe('Borrower Accept Invite from Lender', () => {
                 }
             });
         });
+        cy.waitUntil(() => saveAccountComplete)
     });
 
     // after(() => {
