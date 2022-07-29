@@ -23,7 +23,8 @@ jobs:
           build: npm install
 
   edge:
-    needs: firefox # force jobs to run sequentially. 
+    # force jobs to run sequentially. 
+    needs: firefox 
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
@@ -35,7 +36,8 @@ jobs:
           build: npm install
 
   chrome:
-    needs: edge # force jobs to run sequentially. 
+    # force jobs to run sequentially. 
+    needs: edge 
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -47,7 +49,8 @@ jobs:
           build: npm install
 
   electron:
-    needs: chrome # force jobs to run sequentially. 
+    # force jobs to run sequentially. 
+    needs: chrome
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
