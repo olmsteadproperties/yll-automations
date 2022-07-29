@@ -2,18 +2,20 @@
 
 import paths from "../../../support/yll/paths";
 import {login, logout, navigate, randomString} from "../../../support/yll/util";
-import {generatedAccounts} from '../../../support/output/generatedAccounts.json';
+import {getAccount, saveAccount} from '../../../support/yll/generatedAccounts';
 
-const lastAccountAddedKey = Object.keys(generatedAccounts).slice(-1);
-const lastAccountAdded = generatedAccounts[lastAccountAddedKey];
-const lastBankAccountAddedKey = Object.keys(lastAccountAdded.bankAccounts).slice(-1);
-const lastBankAccountAdded = lastAccountAdded.bankAccounts[lastBankAccountAddedKey];
+let lastAccountAdded;
+let lastBankAccountAdded;
 
 const loanName = "Cypress Test Loan"
 
 describe('Add Borrower to Loan', () => {
     before(() => {
-        login({account: lastAccountAdded});
+        getAccount().then((account) => {
+            lastAccountAdded = account
+            lastBankAccountAdded = lastAccountAdded.bankAccounts[Object.keys(lastAccountAdded.bankAccounts).slice(-1)];
+            login({account: lastAccountAdded});
+        });
     })
 
     // after(() => {

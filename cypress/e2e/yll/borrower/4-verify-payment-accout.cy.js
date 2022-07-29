@@ -2,16 +2,19 @@
 
 import paths from "../../../support/yll/paths";
 import {login, logout, navigate, copyObject} from "../../../support/yll/util";
-import {generatedAccounts} from '../../../support/output/generatedAccounts.json';
+import {getAccount, saveAccount} from '../../../support/yll/generatedAccounts';
 
-const lastAccountAddedKey = Object.keys(generatedAccounts).slice(-1);
-const lastAccountAdded = generatedAccounts[lastAccountAddedKey];
-const lastBankAccountAddedKey = Object.keys(lastAccountAdded.bankAccounts).slice(-1);
-const lastBankAccountAdded = lastAccountAdded.bankAccounts[lastBankAccountAddedKey];
+let lastAccountAdded;
+let lastBankAccountAdded;
+
 
 describe('Add Borrower to Loan', () => {
     before(() => {
-        login({account: lastAccountAdded});
+        getAccount().then((account) => {
+            lastAccountAdded = account
+            lastBankAccountAdded = lastAccountAdded.bankAccounts[Object.keys(lastAccountAdded.bankAccounts).slice(-1)];
+            login({account: lastAccountAdded});
+        });
     })
 
     // after(() => {
@@ -38,13 +41,10 @@ describe('Add Borrower to Loan', () => {
         const updatedAccountRow = cy.contains(lastBankAccountAdded.bankName).parentsUntil('tr').parent(); 
         updatedAccountRow.contains('span', 'Verified');
         
-        const updatedAccount = copyObject(lastAccountAdded);
-        updatedAccount.bankAccounts[lastBankAccountAdded.bankName].verified = true;
-        updatedAccount.dateUpdated = new Date().toString();
-        generatedAccounts[lastAccountAdded.email] = updatedAccount;
-        cy.writeFile('cypress/support/output/generatedAccounts.json', {generatedAccounts});
-        
-        cy.wait(5000);
+        lastAccountAdded.bankAccounts[lastBankAccountAdded.bankName].verified = true;
+        lastAccountAdded.dateUpdated = new Date().toString();
+
+        saveAccount(lastAccountAdded);
     })
 })
 

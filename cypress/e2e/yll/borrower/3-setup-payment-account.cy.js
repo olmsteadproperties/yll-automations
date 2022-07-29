@@ -1,37 +1,22 @@
 /// <reference types="cypress" />
 
 import paths from "../../../support/yll/paths";
+import bankAccounts from "../../../support/yll/bankAccounts";
 import {login, logout, navigate, contains, randomString, increaseTimout, copyObject} from "../../../support/yll/util";
-import {generatedAccounts} from '../../../support/output/generatedAccounts.json';
+import {getAccount, saveAccount} from '../../../support/yll/generatedAccounts';
 import 'cypress-iframe';
+import 'cypress-wait-until';
 
-const lastAccountAddedEmail = Object.keys(generatedAccounts).slice(-1);
-const lastAccountAdded = generatedAccounts[lastAccountAddedEmail];
-
-// More accounts here: https://help.chargeover.com/en/articles/105-test-credit-card-numbers-and-test-ach-echeck-bank-account-numbers
-const bankAccounts = {
-    success: {
-        routingNumber: "072403004",
-        accountNumber: "856667",
-        description: "ACH/eCheck Bank Accounts that Succeed"
-    },
-    fail: {
-        routingNumber: "072403004",
-        accountNumber: "856666",
-        description: "ACH/eCheck bank account number that is rejected immediately, at the time of the transaction"
-    },
-    dwalla: {
-        routingNumber: "222222226", //https://developers.dwolla.com/guides/sandbox#test-bank-account-numbers
-        accountNumber: "856666",
-        description: "Dwalla specific test account"
-    }
-}
+let userAccount;
 
 describe('Set Up Borrower Payment Method', () => {
     before(() => {
-        expect(lastAccountAdded).to.have.property('password')
-        expect(lastAccountAdded.password).not.to.be.empty
-        login({account: lastAccountAdded})
+        getAccount().then((account) => {
+            expect(account).to.have.property('password');
+            expect(account.password).not.to.be.empty;
+            login({account: account});
+            userAccount = account;
+        })
     })
 
     // after(() => {
@@ -57,18 +42,18 @@ describe('Set Up Borrower Payment Method', () => {
         navigate(paths.paymentAdd);
 
         cy.wait(4000);
-        increaseTimout(20000, false);
+        increaseTimout(10000, false);
 
         contains('h4', 'Add Payment Account').then((addPaymentAccount) => { 
             if (addPaymentAccount)
             {
                 //Create Dwalla Account
-                cy.embeded(false, 'get', ['input#emailInput']).type(lastAccountAdded.email);
-                cy.embeded(false, 'get', ['input#firstNameInput']).type(lastAccountAdded.firstName);
-                cy.embeded(false, 'get', ['input#lastNameInput']).type(lastAccountAdded.lastName);
+                cy.embeded(false, 'get', ['input#emailInput']).type(userAccount.email);
+                cy.embeded(false, 'get', ['input#firstNameInput']).type(userAccount.firstName);
+                cy.embeded(false, 'get', ['input#lastNameInput']).type(userAccount.lastName);
                 cy.embeded(false, 'get', ['input#checkbox[name="agreed"]']).click();
                 cy.embeded(false, 'get', ['input#dwolla-customer-create-submit[value="Agree and Continue"]']).click();
-                cy.wait(10000);
+                cy.wait(20000);
             }
 
             cy.reload(); // This is to fix a bug where buttons never enable on first borrower load.
@@ -95,14 +80,15 @@ describe('Set Up Borrower Payment Method', () => {
 
             cy.contains('.MuiButtonBase-root', 'Savings').click();
 
-            // //CONFIRM BANK DETAILS model //Was added in temporarily. Leaving code incase it comes back. 
-            // cy.contains('Confirm Details').click();
-            // const confirmDetailsModel = cy.contains('CONFIRM BANK DETAILS').parent(); 
-            // confirmDetailsModel.within(() => {
-            //     cy.contains(newBankAccount.routingNumber);
-            //     cy.contains(newBankAccount.accountNumber);
-            //     cy.contains(newBankAccount.bankName);
-            // })
+            cy.contains('Next').click();
+
+            //Verify details popup
+            const confirmDetailsModel = cy.contains('Please verify bank details below').parent(); 
+            confirmDetailsModel.within(() => {
+                cy.contains(newBankAccount.routingNumber);
+                cy.contains(newBankAccount.accountNumber);
+                cy.contains(newBankAccount.bankName);
+            })
             
             Cypress.on('uncaught:exception', (err, runnable) => {
                 return false; //Dangeriously ignoring all uncaught exceptions
@@ -113,16 +99,11 @@ describe('Set Up Borrower Payment Method', () => {
             cy.contains('button', 'Add Bank').click();
             cy.wait(3000); //Wait for alert to trigger
 
-            //Update generatedAccounts.json
-            const updatedAccount = copyObject(lastAccountAdded);
-            let updateBankAccounts = typeof(updatedAccount.bankAccounts) == "undefined" ? {} : updatedAccount.bankAccounts;
-            updateBankAccounts[newBankAccount.bankName] = newBankAccount;
-            updatedAccount.bankAccounts = updateBankAccounts;
-            updatedAccount.dateUpdated = new Date().toString();
-            generatedAccounts[lastAccountAdded.email] = updatedAccount;
-            cy.writeFile('cypress/support/output/generatedAccounts.json', {generatedAccounts});
-        
-            cy.wait(5000);
+            userAccount.bankAccounts = typeof(userAccount.bankAccounts) == "undefined" ? {} : userAccount.bankAccounts;
+            userAccount.bankAccounts[newBankAccount.bankName] = newBankAccount;
+            userAccount.dateUpdated = new Date().toString();
+
+            saveAccount(userAccount);
         });
     });
 });

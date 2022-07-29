@@ -3,7 +3,7 @@
 import accounts from "../../../support/yll/accounts";
 import paths from "../../../support/yll/paths";
 import {login, logout, navigate, randomString} from "../../../support/yll/util";
-import {generatedAccounts} from '../../../support/output/generatedAccounts.json';
+import {getAccount, saveAccount} from '../../../support/yll/generatedAccounts';
 
 const loanName = "Cypress Test Loan"
 
@@ -14,8 +14,6 @@ const newAccount = {
     email: Cypress.env('googleEmail').replace('@', `+${lastName}@`),
     dateCreated: new Date().toString()
 }
-
-generatedAccounts[newAccount.email] = newAccount
 
 const inviteAccount = true;
 
@@ -47,9 +45,7 @@ describe('Add Borrower to Loan', () => {
             cy.wait(3000); //wait for alert to trigger
         }
         
-        cy.writeFile('cypress/support/output/generatedAccounts.json', {generatedAccounts});
-        
-        cy.wait(5000);
+        saveAccount(newAccount);
     })
 })
 

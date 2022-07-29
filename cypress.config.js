@@ -1,4 +1,5 @@
 const { defineConfig } = require("cypress");
+const fs = require('fs')
 
 // Populate process.env with values from .env file
 require('dotenv').config()
@@ -20,6 +21,17 @@ module.exports = defineConfig({
       googleClientId: process.env.GOOGLE_CLIENTID,
       googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
       appEmailSender: 'no-reply@yourlandloans.com'
+    },
+    setupNodeEvents(on, config) {
+      on('task', {
+        readFileMaybe(filename) {
+          if (fs.existsSync(filename)) {
+            return fs.readFileSync(filename, 'utf8')
+          }
+      
+          return null
+        },
+      })
     }
   },
 

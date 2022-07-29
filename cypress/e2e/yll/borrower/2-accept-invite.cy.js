@@ -2,7 +2,8 @@
 
 import selectors from "../../../support/yll/selectors";
 import {login, logout, generatePassword, copyObject} from "../../../support/yll/util";
-import {generatedAccounts} from '../../../support/output/generatedAccounts.json';
+// import {generatedAccounts} from '../../../support/output/generatedAccounts.json';
+import {getAccount, saveAccount} from '../../../support/yll/generatedAccounts';
 import 'cypress-wait-until';
 
 describe('Borrower Accept Invite from Lender', () => {
@@ -60,23 +61,24 @@ describe('Borrower Accept Invite from Lender', () => {
                         const password = emailContent.substring(emailContent.match(passwordPattern).index + passwordPattern.length).split(' ')[0];
 
                         passwordResetLink = emailContent.substring(emailContent.match(linkPattern).index + linkPattern.length).split(' ')[0].replaceAll('"','')
-                        newAccount = copyObject(generatedAccounts[userEmail]);
 
                         cy.log('Collecting user details from email.')
                         cy.log(userEmail);
                         cy.log(password);
                         cy.log(passwordResetLink);
 
-                        newAccount.password = password;
-                        newAccount.dateUpdated = new Date().toString();
+                        getAccount(userEmail).then((account) => {
+                            newAccount = account;
+                            newAccount.password = password;
+                            newAccount.dateUpdated = new Date().toString();
+                        });
 
-                        accountUpdateComplete = true;
                     });
                 }
             });
         });
 
-        cy.waitUntil(() => accountUpdateComplete);
+        cy.waitUntil(() => newAccount);
     });
 
     // after(() => {
@@ -115,14 +117,12 @@ describe('Borrower Accept Invite from Lender', () => {
                 const updatedAccount = copyObject(newAccount)
                 updatedAccount.password = passwordReset;
                 updatedAccount.dateUpdated = new Date().toString();
-                generatedAccounts[newAccount.email] = updatedAccount;
-                cy.writeFile('cypress/support/output/generatedAccounts.json', {generatedAccounts});
+                
+                saveAccount(updatedAccount);
 
                 cy.log(`New borrower created:`)
                 cy.log(`\temail: ${updatedAccount.email}`)
                 cy.log(`\tpassword: ${updatedAccount.password}`)
-        
-                cy.wait(5000);
             })
         })
     });
