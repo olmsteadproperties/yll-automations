@@ -11,7 +11,6 @@ on: [push]
 
 jobs:
   firefox:
-    needs: chrome
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
