@@ -28,8 +28,8 @@ describe('Add Borrower to Loan', () => {
 
             const regex1 = /[^0-9](?=[0-9])/g;
             const regex2 = /[^a-zA-Z](?=[a-zA-Z])/g;
-            const lastBankAccountAdded = account.bankAccounts[Object.keys(account.bankAccounts).slice(-1)];
-            const nameWithSpaces = lastBankAccountAdded.bankName.replace(regex1, '$& ').replace(regex2, '$& ');
+            const bankAccount = account.bankAccounts[Object.keys(account.bankAccounts).slice(-1)];
+            const nameWithSpaces = bankAccount.bankName.replace(regex1, '$& ').replace(regex2, '$& ');
             cy.log('name with spaced ' + nameWithSpaces);
             cy.contains('Select Bank Account').parent().contains(nameWithSpaces, {matchCase: false}).click();
             cy.contains('Payment Timing').parent().contains('Payment Due Now').click();

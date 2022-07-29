@@ -20,8 +20,8 @@ describe('Add Borrower to Loan', () => {
         getAccount().then((account) => {
             navigate(paths.paymentMethods);
 
-            lastBankAccountAdded = lastAccountAdded.bankAccounts[Object.keys(lastAccountAdded.bankAccounts).slice(-1)];
-            const accountRow = cy.contains(lastBankAccountAdded.bankName).parentsUntil('tr').parent(); 
+            const bankAccount = account.bankAccounts[Object.keys(account.bankAccounts).slice(-1)];
+            const accountRow = cy.contains(bankAccount.bankName).parentsUntil('tr').parent(); 
             
             accountRow.contains('button', 'Verify').click();
             cy.get('input#amt1').type(".01");
@@ -35,10 +35,10 @@ describe('Add Borrower to Loan', () => {
 
             cy.wait(3000); //Wait for alert to trigger
             
-            const updatedAccountRow = cy.contains(lastBankAccountAdded.bankName).parentsUntil('tr').parent(); 
+            const updatedAccountRow = cy.contains(bankAccount.bankName).parentsUntil('tr').parent(); 
             updatedAccountRow.contains('span', 'Verified');
             
-            account.bankAccounts[lastBankAccountAdded.bankName].verified = true;
+            account.bankAccounts[bankAccount.bankName].verified = true;
             account.dateUpdated = new Date().toString();
 
             saveAccount(account);
