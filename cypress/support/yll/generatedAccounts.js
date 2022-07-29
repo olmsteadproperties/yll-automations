@@ -29,7 +29,7 @@ const saveAccount = (data) => {
             generatedAccounts = text == null ? {} : JSON.parse(text);
             generatedAccounts[data.email] = data;
             cy.writeFile(generatedAccountsFilePath, {generatedAccounts}).then(() => 
-                resolve() 
+                resolve()
             );
         });
     });

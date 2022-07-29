@@ -2,17 +2,15 @@
 
 import selectors from "../../../support/yll/selectors";
 import {login, logout, generatePassword, copyObject} from "../../../support/yll/util";
-// import {generatedAccounts} from '../../../support/output/generatedAccounts.json';
 import {getAccount, saveAccount} from '../../../support/yll/generatedAccounts';
 import 'cypress-wait-until';
 
 describe('Borrower Accept Invite from Lender', () => {
+    let saveAccountComplete = false;
     let passwordResetLink;
-    let newAccount;
+    let userEmail;
     
     before(() => {
-        let accountUpdateComplete = false;
-
         cy.log('Logging in to Google Account')
         cy.request({
             method: 'POST',
@@ -57,28 +55,25 @@ describe('Borrower Accept Invite from Lender', () => {
                         const usernamePattern = 'Your username is '
                         const passwordPattern = 'temporary password is '
                         const linkPattern = 'Please click <a href='
-                        const userEmail = emailContent.substring(emailContent.match(usernamePattern).index + usernamePattern.length).split(' ')[0];
-                        const password = emailContent.substring(emailContent.match(passwordPattern).index + passwordPattern.length).split(' ')[0];
+                        const tempPassword = emailContent.substring(emailContent.match(passwordPattern).index + passwordPattern.length).split(' ')[0];
+                        userEmail = emailContent.substring(emailContent.match(usernamePattern).index + usernamePattern.length).split(' ')[0];
 
                         passwordResetLink = emailContent.substring(emailContent.match(linkPattern).index + linkPattern.length).split(' ')[0].replaceAll('"','')
 
                         cy.log('Collecting user details from email.')
                         cy.log(userEmail);
-                        cy.log(password);
+                        cy.log(tempPassword);
                         cy.log(passwordResetLink);
 
-                        getAccount(userEmail).then((account) => {
-                            newAccount = account;
-                            newAccount.password = password;
-                            newAccount.dateUpdated = new Date().toString();
+                        getAccount(userEmail).then((account) => {                            
+                            account.password = tempPassword;
+                            account.dateUpdated = new Date().toString();
+                            saveAccount(account).then(() => saveAccountComplete = true);
                         });
-
                     });
                 }
             });
         });
-
-        cy.waitUntil(() => newAccount);
     });
 
     // after(() => {
@@ -86,45 +81,47 @@ describe('Borrower Accept Invite from Lender', () => {
     // })
 
     it('Should reset password using email reset link', () => {
-        cy.visit(passwordResetLink).then(() => {
-            cy.url().then(url => {
+        cy.waitUntil(() => saveAccountComplete).then(() => {
+            cy.visit(passwordResetLink).then(() => {
+                cy.url().then(url => {
+                    getAccount(userEmail).then((account) => {
+                        let devUrl = "";
+                        if (!url.includes('dev.'))
+                        {
+                            let devUrl = url.replace('https://app.yourlandloans', 'https://dev.app.yourlandloans');
+                            cy.visit(devUrl)
+                        }
+                        
+                        login({account, loginUrl: devUrl});
 
-                let devUrl = "";
-                if (!url.includes('dev.'))
-                {
-                    let devUrl = url.replace('https://app.yourlandloans', 'https://dev.app.yourlandloans');
-                    cy.visit(devUrl)
-                }
-                
-                login({account: newAccount, loginUrl: devUrl});
+                        cy.get(selectors.pageSignIn.passwordInput).should('have.length', 1)
+                        
+                        cy.contains('Password requires reset').should('have.length', 1)
+                        cy.contains('button', 'Reset Password').should('have.length', 1)
 
-                cy.get(selectors.pageSignIn.passwordInput).should('have.length', 1)
-                
-                cy.contains('Password requires reset').should('have.length', 1)
-                cy.contains('button', 'Reset Password').should('have.length', 1)
+                        const passwordReset = generatePassword(12,1,1,1);
 
-                const passwordReset = generatePassword(12,1,1,1);
+                        cy.get(selectors.pageSignIn.passwordInput).clear();
+                        cy.get(selectors.pageSignIn.passwordInput).type(passwordReset);
+                        
+                        cy.on('window:alert', (text) => {
+                            expect(text).to.contains('Reset Password Successful');
+                        });
+                        cy.contains('button', 'Reset Password').click();
+                        cy.wait(3000); //Wait for alert to trigger
 
-                cy.get(selectors.pageSignIn.passwordInput).clear();
-                cy.get(selectors.pageSignIn.passwordInput).type(passwordReset);
-                
-                cy.on('window:alert', (text) => {
-                    expect(text).to.contains('Reset Password Successful');
+                        account.password = passwordReset;
+                        account.dateUpdated = new Date().toString();
+                        
+                        saveAccount(account);
+
+                        cy.log(`New borrower created:`);
+                        cy.log(`\temail: ${account.email}`);
+                        cy.log(`\tpassword: ${account.password}`);
+                    });
                 });
-                cy.contains('button', 'Reset Password').click();
-                cy.wait(3000); //Wait for alert to trigger
-
-                const updatedAccount = copyObject(newAccount)
-                updatedAccount.password = passwordReset;
-                updatedAccount.dateUpdated = new Date().toString();
-                
-                saveAccount(updatedAccount);
-
-                cy.log(`New borrower created:`)
-                cy.log(`\temail: ${updatedAccount.email}`)
-                cy.log(`\tpassword: ${updatedAccount.password}`)
-            })
-        })
+            });
+        });
     });
 })
 
