@@ -68,13 +68,12 @@ describe('Borrower Accept Invite from Lender', () => {
                         getAccount(userEmail).then((account) => {                            
                             account.password = tempPassword;
                             account.dateUpdated = new Date().toString();
-                            saveAccount(account).then(() => saveAccountComplete = true);
+                            saveAccount(account);
                         });
                     });
                 }
             });
         });
-        cy.waitUntil(() => saveAccountComplete)
     });
 
     // after(() => {
@@ -82,44 +81,42 @@ describe('Borrower Accept Invite from Lender', () => {
     // })
 
     it('Should reset password using email reset link', () => {
-        cy.waitUntil(() => saveAccountComplete).then(() => {
-            cy.visit(passwordResetLink).then(() => {
-                cy.url().then(url => {
-                    getAccount(userEmail).then((account) => {
-                        let devUrl = "";
-                        if (!url.includes('dev.'))
-                        {
-                            let devUrl = url.replace('https://app.yourlandloans', 'https://dev.app.yourlandloans');
-                            cy.visit(devUrl)
-                        }
-                        
-                        login({account, loginUrl: devUrl});
+        cy.visit(passwordResetLink).then(() => {
+            cy.url().then(url => {
+                getAccount(userEmail).then((account) => {
+                    let devUrl = "";
+                    if (!url.includes('dev.'))
+                    {
+                        let devUrl = url.replace('https://app.yourlandloans', 'https://dev.app.yourlandloans');
+                        cy.visit(devUrl)
+                    }
+                    
+                    login({account, loginUrl: devUrl});
 
-                        cy.get(selectors.pageSignIn.passwordInput).should('have.length', 1)
-                        
-                        cy.contains('Password requires reset').should('have.length', 1)
-                        cy.contains('button', 'Reset Password').should('have.length', 1)
+                    cy.get(selectors.pageSignIn.passwordInput).should('have.length', 1)
+                    
+                    cy.contains('Password requires reset').should('have.length', 1)
+                    cy.contains('button', 'Reset Password').should('have.length', 1)
 
-                        const passwordReset = generatePassword(12,1,1,1);
+                    const passwordReset = generatePassword(12,1,1,1);
 
-                        cy.get(selectors.pageSignIn.passwordInput).clear();
-                        cy.get(selectors.pageSignIn.passwordInput).type(passwordReset);
-                        
-                        cy.on('window:alert', (text) => {
-                            expect(text).to.contains('Reset Password Successful');
-                        });
-                        cy.contains('button', 'Reset Password').click();
-                        cy.wait(3000); //Wait for alert to trigger
-
-                        account.password = passwordReset;
-                        account.dateUpdated = new Date().toString();
-                        
-                        saveAccount(account);
-
-                        cy.log(`New borrower created:`);
-                        cy.log(`\temail: ${account.email}`);
-                        cy.log(`\tpassword: ${account.password}`);
+                    cy.get(selectors.pageSignIn.passwordInput).clear();
+                    cy.get(selectors.pageSignIn.passwordInput).type(passwordReset);
+                    
+                    cy.on('window:alert', (text) => {
+                        expect(text).to.contains('Reset Password Successful');
                     });
+                    cy.contains('button', 'Reset Password').click();
+                    cy.wait(3000); //Wait for alert to trigger
+
+                    account.password = passwordReset;
+                    account.dateUpdated = new Date().toString();
+                    
+                    saveAccount(account);
+
+                    cy.log(`New borrower created:`);
+                    cy.log(`\temail: ${account.email}`);
+                    cy.log(`\tpassword: ${account.password}`);
                 });
             });
         });

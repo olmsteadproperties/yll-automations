@@ -10,51 +10,44 @@ env:
 on: [push]
 
 jobs:
-  # cypress-run:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
-  #     # Install NPM dependencies, cache them correctly
-  #     # and run all Cypress tests
-  #     - name: Cypress run
-  #       uses: cypress-io/github-action@v4
-  #       with:
-  #         build: npm install
-  #         start: npm run cypress:run --headed --browser chrome --spec 'cypress/e2e/yll/**' --record --key b2d95fbf-4fe7-42cc-8a13-f6828ab975f1
+  firefox:
+    needs: chrome
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: cypress-io/github-action@v4
+        with:
+          browser: firefox
+          spec: 'cypress/e2e/yll/**'
+          headed: true
+          build: npm install
 
-  # firefox:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: cypress-io/github-action@v4
-  #       with:
-  #         # browser: firefox
-  #         build: npm install
-  #         start: npm run cypress:run --headed --browser firefox --spec 'cypress/e2e/yll/**'
+  edge:
+    needs: firefox # force jobs to run sequentially. 
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: cypress-io/github-action@v4
+        with:
+          browser: edge
+          spec: 'cypress/e2e/yll/**'
+          headed: true
+          build: npm install
 
-  # edge:
-  #   runs-on: windows-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: cypress-io/github-action@v4
-  #       with:
-  #         # browser: edge
-  #         build: npm install
-  #         start: npm run cypress:run --headed --browser edge --spec 'cypress/e2e/yll/**'
-
-  # chrome:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: cypress-io/github-action@v4
-  #       with:
-  #         # browser: chrome
-  #         # headed: true
-  #         build: npm install
-  #         start: npm run cypress:run --headed --browser chrome --spec 'cypress/e2e/yll/**'
+  chrome:
+    needs: edge # force jobs to run sequentially. 
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: cypress-io/github-action@v4
+        with:
+          browser: chrome
+          spec: 'cypress/e2e/yll/**'
+          headed: true
+          build: npm install
 
   electron:
+    needs: chrome # force jobs to run sequentially. 
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
